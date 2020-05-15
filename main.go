@@ -55,9 +55,9 @@ func (s *Soduku) FindPossibilityForOne(x, y int) (possibility []int) {
 }
 
 //刷新所有位置，遇到只有1种情况的空位就填上并重新开始，直到只剩下多种可能性的情况
-func (s *Soduku) FindLeastPossibilityXY() (x int, y int, possibility []int, failed bool,result *Soduku) {
+func (s *Soduku) FindLeastPossibilityXY() (x int, y int, possibility []int, failed bool, result *Soduku) {
 	minPossibility := 10
-	var filled bool	//标志着本次寻找是否找到了一个位置的数
+	var filled bool //标志着本次寻找是否找到了一个位置的数
 	for i := 0; i < 9; i++ {
 		for j := 0; j < 9; j++ {
 			if s.Board[i][j] == 0 { //没填
@@ -65,10 +65,10 @@ func (s *Soduku) FindLeastPossibilityXY() (x int, y int, possibility []int, fail
 				if len(p) == 0 { //代表这个数据有问题，有一个格子完全没有可能性
 					failed = true
 					return
-				}else if len(p) == 1{
-					s.Board[i][j]=p[0]
+				} else if len(p) == 1 {
+					s.Board[i][j] = p[0]
 					filled = true
-				}else if len(p)<minPossibility{	//找到了具有更少可能性的格子
+				} else if len(p) < minPossibility { //找到了具有更少可能性的格子
 					minPossibility = len(p)
 					possibility = p
 					x = i
@@ -78,36 +78,37 @@ func (s *Soduku) FindLeastPossibilityXY() (x int, y int, possibility []int, fail
 		}
 	}
 	if filled {
-		return s.FindLeastPossibilityXY()	//如果发生了填空行为，那么重新寻找一遍
-	}else if minPossibility == 10{
+		return s.FindLeastPossibilityXY() //如果发生了填空行为，那么重新寻找一遍
+	} else if minPossibility == 10 {
 		result = s
 		return
 	}
 	return
 }
 
-func (s *Soduku) Find()(ret *Soduku){
-	x,y,possibility,failed,result:= s.FindLeastPossibilityXY()
-	if result != nil{
+func (s *Soduku) Find() (ret *Soduku) {
+	x, y, possibility, failed, result := s.FindLeastPossibilityXY()
+	if result != nil {
 		return result
 	}
 	if failed {
 		return nil
 	}
-	for _, possibleValue := range possibility{
+	fmt.Println(x, y, "possibility length:", len(possibility))
+	for _, possibleValue := range possibility {
 		sodukuCopy := s.Fork()
 		sodukuCopy.Board[x][y] = possibleValue
-		if result := sodukuCopy.Find();result !=nil{
+		if result := sodukuCopy.Find(); result != nil {
 			return result
 		}
 	}
 	return nil
 }
 
-func (s *Soduku) Print(){
+func (s *Soduku) Print() {
 	for i := 0; i < 9; i++ {
 		for j := 0; j < 9; j++ {
-			fmt.Print(s.Board[i][j]," ")
+			fmt.Print(s.Board[i][j], " ")
 		}
 		fmt.Print("\n")
 	}
@@ -124,7 +125,7 @@ func main() {
 		{0, 1, 0, 7, 8, 0, 2, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 5, 0},
 		{0, 8, 1, 3, 0, 0, 0, 0, 7},
-		{0,0,0,8,0,0,1,0,4},
+		{0, 0, 0, 8, 0, 0, 1, 0, 4},
 	}
 	res := s.Find()
 	res.Print()
